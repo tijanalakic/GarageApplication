@@ -1,0 +1,137 @@
+
+.button {
+    -fx-background-insets: 0;
+    -fx-background-color: #ffc215;
+    -fx-text-fill: #f2f2f2;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+   
+}
+
+.button:hover {
+    -fx-background-color: #ff9815;
+}
+
+.combo-box-base  
+{
+    -fx-background-color: yellow, yellow, yellow, yellow;
+    -fx-background-radius: 5, 5, 4, 3;
+    -fx-background-insets: 0 0 0 0, 0, 0, 0;
+    -fx-padding: 0;
+    -fx-background-color: #ffc215;
+    -fx-text-fill: #f2f2f2;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.combo-box-base:hover
+{
+    -fx-color: #ff9815;
+}
+
+.label {
+    -fx-text-fill: #666;
+    -fx-font-size: 16px;
+}
+
+#applicationMainAnchorPane {
+    -fx-background-color: #f2f2f2;
+    -fx-border-width: 1px;
+    -fx-border-color: #ccc;
+}
+
+#applicationMenuAnchorPane {
+    -fx-background-color: transparent;
+}
+
+/*** MAIN APP ELEMENTS ***/
+
+
+#startUserAppButton {
+    -fx-background-color: #ffc215;
+    -fx-text-fill: #f2f2f2;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+
+#startUserAppButton:hover {
+    -fx-background-color: #ff9815;
+}
+/*#platformaComboBox{
+       -fx-background-color: #ffc215;;
+    -fx-border-width: 1px;
+    -fx-border-color: #ccc;  
+        -fx-text-fill: #f2f2f2;
+
+}*/
+
+
+
+
+
+
+
+
+
+/*** LISTVIEW ***/
+/* #vozilaListView .thumb {
+     -fx-background-color: #ffc215;
+    -fx-text-fill: #f2f2f2;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+#vozilaListView {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}*/
+
+#addVoziloWindowHeaderLabel {
+    -fx-text-fill: #666;
+    -fx-font-size: 18px;
+}
+
+
+
+#userAppHeaderLabel {
+    -fx-text-fill: #666;
+    -fx-font-size: 18px;
+}
+
+#addVoziloWarningLabel {
+    -fx-text-fill: #f00;
+    -fx-font-size: 16px;
+}
+
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-background-color: #ffc215;
+    -fx-text-fill:  #f2f2f2;
+
+}
+
+.list-cell:even {  
+    -fx-background-color: white;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #ff9815;
+    -fx-text-fill: white;
+}
+.table-view .column-header {
+    -fx-background-color: #ffc215;
+}
+  
+.table-view .column-header .label {
+    -fx-text-fill:  #f2f2f2;
+}
+
+.table-row-cell:selected {
+   -fx-background-color: #ff9815; 
+   -fx-text-fill: #f2f2f2;
+}
+
+
+.table-view:focused{
+-fx-border-color: white;
+}

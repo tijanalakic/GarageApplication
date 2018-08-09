@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.*?>
+
+<AnchorPane id="applicationMainAnchorPane" fx:id="applicationMainAnchorPane" maxHeight="1.7976931348623157E308" 
+            maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="garageapplication.FXMLAddVoziloController">
+   <stylesheets>
+    <URL value="@../css/applicationCss.css" />
+    </stylesheets>
+    <children>
+      <Button fx:id="addVoziloSubmitButton" minWidth="580.0" mnemonicParsing="false" onAction="#addVoziloSubmitButtonAction" prefWidth="580.0" text="OK" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+      <AnchorPane fx:id="applicationMenuAnchorPane" layoutX="76.0" layoutY="40.0" minHeight="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      </AnchorPane>
+      <VBox fx:id="parentVBox" alignment="TOP_CENTER" layoutX="86.0" layoutY="78.0" spacing="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
+         <children>
+            <Label fx:id="addVoziloWindowHeaderLabel" text="Dodaj podatke o vozilu" />
+            <TextField promptText="Naziv vozila" />
+            <TextField promptText="Broj sasije" />
+            <TextField promptText="Broj motora" />
+            <TextField promptText="Registarski broj" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="applicationMainAnchorPane" fx:id="applicationMainAnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+            minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" 
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="garageapplication.FXMLEditVoziloController">
+   <stylesheets>
+    <URL value="@../css/applicationCss.css" />
+    </stylesheets>
+    <children>
+      <Button fx:id="editVoziloSubmitButton" minWidth="580.0" mnemonicParsing="false" onAction="#editVoziloSubmitButtonAction" prefWidth="580.0" text="Sacuvaj izmjene" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+      <AnchorPane fx:id="applicationMenuAnchorPane" layoutX="76.0" layoutY="40.0" minHeight="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="TOP_RIGHT" layoutX="462.0" layoutY="-25.0" spacing="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+               <padding>
+                  <Insets right="2.0" top="2.0" />
+               </padding>
+            </HBox>
+         </children>
+      </AnchorPane>
+      <VBox fx:id="parentVBox" alignment="TOP_CENTER" layoutX="86.0" layoutY="78.0" spacing="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
+         <children>
+            <Label fx:id="addVoziloWindowHeaderLabel" text="Izmijeni podatke o vozilu" />
+            <TextField promptText="Naziv vozila" />
+            <TextField promptText="Broj sasije" />
+            <TextField promptText="Broj motora" />
+            <TextField promptText="Registarski broj" />
+
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
