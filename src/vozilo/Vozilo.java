@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Date;
 
 /**
  *
@@ -30,6 +31,9 @@ public abstract class Vozilo extends Thread implements Serializable {
     private File path = new File("");
     private int x = 0, y = 0;
     private int trenutniNivo = 0;
+    private long vrijemeParkiranja=0;
+    private long vrijemeNapustanjaParkinga=0;
+    private long zadrzavanje=0;
     public static int[] X_PARKIRANJE = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6};
     public static int[] X_NOVI_NIVO = {2, 3, 4, 5, 6, 7};
     public static int[] X_NOVI_NIVO_ISPARKIRAVANJE = {0, 1, 2, 3, 4, 5, 6, 7};
@@ -49,6 +53,7 @@ public abstract class Vozilo extends Thread implements Serializable {
         this.foto = foto;
         this.registarskiBroj = registarskiBroj;
         this.tip = tip;
+        this.vrijemeParkiranja=new Date().getTime();
 
     }
 
@@ -274,6 +279,11 @@ public abstract class Vozilo extends Thread implements Serializable {
     public void setTrenutniNivo(int trenutniNivo) {
         this.trenutniNivo = trenutniNivo;
     }
+        
+    public long getZadrzavanje(){
+    
+        return zadrzavanje;
+    }
 
     public void isparkiraj() {
 
@@ -383,6 +393,14 @@ public abstract class Vozilo extends Thread implements Serializable {
         GarageApplication.getExchanger().refreshSimulacijaMatrica();
         obavijesti(platforma);
 
+        if(trenutniNivo==0 && x==0 && y==0){
+            
+        
+            vrijemeNapustanjaParkinga=new Date().getTime();
+            zadrzavanje=vrijemeNapustanjaParkinga-vrijemeParkiranja;
+            
+        
+        }
     }
 
     public boolean sudar(Platforma platforma) {
