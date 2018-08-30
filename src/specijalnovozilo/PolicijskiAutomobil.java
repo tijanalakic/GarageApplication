@@ -13,7 +13,7 @@ import vozilo.Automobil;
  *
  * @author Tijana Lakic
  */
-public class PolicijskiAutomobil extends Automobil implements PolicijskiInterface{
+public class PolicijskiAutomobil extends SpecijalniAutomobil implements PolicijskiInterface{
 
     Random rand=new Random();
     

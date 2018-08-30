@@ -11,7 +11,7 @@ import vozilo.Kombi;
  *
  * @author Tijana Lakic
  */
-public class SanitetskiKombi extends Kombi implements SanitetskiInterface {
+public class SanitetskiKombi extends SpecijalniKombi implements SanitetskiInterface {
 
     public SanitetskiKombi() {
         

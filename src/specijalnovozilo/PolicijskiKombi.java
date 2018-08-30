@@ -10,8 +10,9 @@ import vozilo.Kombi;
 /**
  *
  * @author Tijana Lakic
+
  */
-public class PolicijskiKombi extends Kombi implements PolicijskiInterface {
+public class PolicijskiKombi extends SpecijalniKombi implements PolicijskiInterface {
 
     public PolicijskiKombi() {
     

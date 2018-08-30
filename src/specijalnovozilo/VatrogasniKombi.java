@@ -11,7 +11,7 @@ import vozilo.Kombi;
  *
  * @author Tijana Lakic
  */
-public class VatrogasniKombi extends Kombi implements VatrogasniInterface{
+public class VatrogasniKombi extends SpecijalniKombi implements VatrogasniInterface{
 
     public VatrogasniKombi() {
        

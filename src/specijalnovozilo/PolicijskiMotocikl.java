@@ -11,7 +11,7 @@ import vozilo.Motocikl;
  *
  * @author Tijana Lakic
  */
-public class PolicijskiMotocikl extends Motocikl implements PolicijskiInterface{
+public class PolicijskiMotocikl extends SpecijalniMotocikl implements PolicijskiInterface{
 
     public PolicijskiMotocikl() {
         

@@ -11,7 +11,7 @@ import vozilo.Automobil;
  *
  * @author Tijana Lakic
  */
-public class SanitetskiAutomobil extends Automobil implements SanitetskiInterface{
+public class SanitetskiAutomobil extends SpecijalniAutomobil implements SanitetskiInterface{
 
     public SanitetskiAutomobil() {
         super();

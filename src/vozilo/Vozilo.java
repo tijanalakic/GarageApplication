@@ -14,6 +14,8 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Date;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  *
@@ -21,26 +23,26 @@ import java.util.Date;
  */
 public abstract class Vozilo extends Thread implements Serializable {
 
-    private String naziv;
-    private String brojSasije;
-    private String brojMotora;
-    private File foto;
-    private String registarskiBroj;
-    private TipVozilaEnum tip;
+    protected String naziv;
+    protected String brojSasije;
+    protected String brojMotora;
+    protected File foto;
+    protected String registarskiBroj;
+    protected TipVozilaEnum tip;
     public static Random rand = new Random();
-    private File path = new File("");
-    private int x = 0, y = 0;
-    private int trenutniNivo = 0;
-    private long vrijemeParkiranja=0;
-    private long vrijemeNapustanjaParkinga=0;
-    private long zadrzavanje=0;
+    protected File path = new File("");
+    protected int x = 0, y = 0;
+    protected int trenutniNivo = 0;
+    protected long vrijemeParkiranja = 0;
+    protected long vrijemeNapustanjaParkinga = 0;
+    protected long zadrzavanje = 0;
     public static int[] X_PARKIRANJE = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6};
     public static int[] X_NOVI_NIVO = {2, 3, 4, 5, 6, 7};
     public static int[] X_NOVI_NIVO_ISPARKIRAVANJE = {0, 1, 2, 3, 4, 5, 6, 7};
     public static int[] Y_PARKIRANJE = {1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 8, 7, 6, 5, 4, 3, 2};//properties
-    private int[] parkingX = {0, 3, 4, 7};
-    private int[] parkingY = {2, 3, 4, 5, 6, 7, 8, 9};
-    private Boolean parkiran = true;
+    protected int[] parkingX = {0, 3, 4, 7};
+    protected int[] parkingY = {2, 3, 4, 5, 6, 7, 8, 9};
+    protected Boolean parkiran = true;
 
     public Vozilo() {
     }
@@ -53,7 +55,7 @@ public abstract class Vozilo extends Thread implements Serializable {
         this.foto = foto;
         this.registarskiBroj = registarskiBroj;
         this.tip = tip;
-        this.vrijemeParkiranja=new Date().getTime();
+        this.vrijemeParkiranja = new Date().getTime();
 
     }
 
@@ -100,7 +102,7 @@ public abstract class Vozilo extends Thread implements Serializable {
     public void setRegistarskiBroj(String registarskiBroj) {
         this.registarskiBroj = registarskiBroj;
     }
-    //  private static final Logger LOG = Logger.getLogger(Vozilo.class.getName());
+    //  protected static final Logger LOG = Logger.getLogger(Vozilo.class.getName());
 
     @Override
     public String toString() {
@@ -127,7 +129,6 @@ public abstract class Vozilo extends Thread implements Serializable {
             y = Y_PARKIRANJE[i];
             platforma.getMatrica()[x][y] = this;
             GarageApplication.getExchanger().refreshSimulacijaMatrica();
-            obavijesti(platforma);
             i++;
             try {
                 sleep(500);
@@ -142,7 +143,6 @@ public abstract class Vozilo extends Thread implements Serializable {
             for (int a = 0; a < X_NOVI_NIVO.length; a++) {
                 platforma.getMatrica()[X_NOVI_NIVO[a]][1] = this;//mora provjeriti sudar i staviti umjesto [1] y neki
                 GarageApplication.getExchanger().refreshSimulacijaMatrica();
-                obavijesti(platforma);
 
                 try {
                     sleep(500);
@@ -166,7 +166,6 @@ public abstract class Vozilo extends Thread implements Serializable {
             y = Y_PARKIRANJE[i];
             platforma.getMatrica()[x][y] = this;
             GarageApplication.getExchanger().refreshSimulacijaMatrica();
-            obavijesti(platforma);
             try {
                 sleep(500);
             } catch (InterruptedException e) {
@@ -176,7 +175,6 @@ public abstract class Vozilo extends Thread implements Serializable {
             i++;
 
             GarageApplication.getExchanger().refreshSimulacijaMatrica();
-            obavijesti(platforma);
 
         }
 
@@ -236,7 +234,6 @@ public abstract class Vozilo extends Thread implements Serializable {
                 }
                 platforma.getMatrica()[temp][y] = this;
                 GarageApplication.getExchanger().refreshSimulacijaMatrica();
-                obavijesti(platforma);
 
                 try {
                     sleep(500);
@@ -279,9 +276,9 @@ public abstract class Vozilo extends Thread implements Serializable {
     public void setTrenutniNivo(int trenutniNivo) {
         this.trenutniNivo = trenutniNivo;
     }
-        
-    public long getZadrzavanje(){
-    
+
+    public long getZadrzavanje() {
+
         return zadrzavanje;
     }
 
@@ -290,40 +287,50 @@ public abstract class Vozilo extends Thread implements Serializable {
         Platforma platforma = GarageApplication.getExchanger().getGaraza().getPlatforme().get(trenutniNivo);
 
         if (x == 0 || x == 4) {
-            platforma.getMatrica()[x][y] = "*";
             x++;
             if (platforma.getMatrica()[x][y] instanceof Vozilo) {
                 sudar(platforma);
             }
+            if (platforma.isImaSudar()) {
+                uvidjaj(platforma);
+            }
+            platforma.getMatrica()[x - 1][y] = "*";
+
             platforma.getMatrica()[x][y] = this;
             GarageApplication.getExchanger().refreshSimulacijaMatrica();
-            obavijesti(platforma);
 
             try {
                 sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            platforma.getMatrica()[x][y] = null;
 
             x++;
             if (platforma.getMatrica()[x][y] instanceof Vozilo) {
                 sudar(platforma);
             }
+            if (platforma.isImaSudar()) {
+                uvidjaj(platforma);
+            }
+            platforma.getMatrica()[x - 1][y] = null;
+
             platforma.getMatrica()[x][y] = this;
 
         } else if (x == 3 || x == 7) {
 
-            platforma.getMatrica()[x][y] = "*";
             x--;
             if (platforma.getMatrica()[x][y] instanceof Vozilo) {
                 sudar(platforma);
             }
+            if (platforma.isImaSudar()) {
+                uvidjaj(platforma);
+            }
+            platforma.getMatrica()[x + 1][y] = "*";
+
             platforma.getMatrica()[x][y] = this;
 
         }
         GarageApplication.getExchanger().refreshSimulacijaMatrica();
-        obavijesti(platforma);
 
         try {
             sleep(500);
@@ -332,15 +339,18 @@ public abstract class Vozilo extends Thread implements Serializable {
         }
 
         while (y > 0) {
-            platforma.getMatrica()[x][y] = null;
             y--;
             if (platforma.getMatrica()[x][y] instanceof Vozilo) {
                 sudar(platforma);
             }
+            if (platforma.isImaSudar()) {
+                uvidjaj(platforma);
+            }
+            platforma.getMatrica()[x][y + 1] = null;
+
             platforma.getMatrica()[x][y] = this;
 
             GarageApplication.getExchanger().refreshSimulacijaMatrica();
-            obavijesti(platforma);
 
             try {
                 sleep(500);
@@ -350,15 +360,18 @@ public abstract class Vozilo extends Thread implements Serializable {
         }
 
         while (x > 0) {
-            platforma.getMatrica()[x][y] = null;
             x--;
             if (platforma.getMatrica()[x][y] instanceof Vozilo) {
                 sudar(platforma);
             }
+            if (platforma.isImaSudar()) {
+                uvidjaj(platforma);
+            }
+            platforma.getMatrica()[x + 1][y] = null;
+
             platforma.getMatrica()[x][y] = this;
 
             GarageApplication.getExchanger().refreshSimulacijaMatrica();
-            obavijesti(platforma);
 
             try {
                 sleep(500);
@@ -375,9 +388,15 @@ public abstract class Vozilo extends Thread implements Serializable {
             platforma = GarageApplication.getExchanger().getGaraza().getPlatforme().get(trenutniNivo);
             platforma.getListaVozila().add(this);
             for (int a = X_NOVI_NIVO_ISPARKIRAVANJE.length - 1; a >= 0; a--) {
+
+                if (platforma.getMatrica()[a][0] instanceof Vozilo) {
+                    sudar(platforma);
+                }
+                if (platforma.isImaSudar()) {
+                    uvidjaj(platforma);
+                }
                 platforma.getMatrica()[X_NOVI_NIVO_ISPARKIRAVANJE[a]][0] = this;
                 GarageApplication.getExchanger().refreshSimulacijaMatrica();
-                obavijesti(platforma);
 
                 try {
                     sleep(500);
@@ -391,40 +410,42 @@ public abstract class Vozilo extends Thread implements Serializable {
             trenutniNivo--;
         }
         GarageApplication.getExchanger().refreshSimulacijaMatrica();
-        obavijesti(platforma);
 
-        if(trenutniNivo==0 && x==0 && y==0){
-            
-        
-            vrijemeNapustanjaParkinga=new Date().getTime();
-            zadrzavanje=vrijemeNapustanjaParkinga-vrijemeParkiranja;
-            
-        
+        if (trenutniNivo == 0 && x == 0 && y == 0) {
+
+            vrijemeNapustanjaParkinga = new Date().getTime();
+            zadrzavanje = vrijemeNapustanjaParkinga - vrijemeParkiranja;
+
         }
     }
 
     public boolean sudar(Platforma platforma) {
         Random random = new Random();
         double vjerovatnoca = random.nextDouble();
-        if (vjerovatnoca < 0.15) {
+        if (vjerovatnoca < 1) { //0.15
+
+            platforma.setImaSudar(true);
+            GarageApplication.getExchanger().KOORDINATE_NESRECE_X = x;
+            GarageApplication.getExchanger().KOORDINATE_NESRECE_Y = y;
+            GarageApplication.getExchanger().NIVO_PLATFORME_NESRECE = trenutniNivo;
+
+            GarageApplication.getExchanger().getGaraza().pozivSpecijalnihVozila(trenutniNivo);
             return true;
+
         } else {
-            try {
-                synchronized (platforma.getMatrica()[x][y]) {
-                    wait();
-                }
-            } catch (InterruptedException ex) {
-                Logger.getLogger("error.log").log(Level.SEVERE, null, ex);
-            }
             return false;
-
         }
     }
 
-    public void obavijesti(Platforma platforma) {
-
-        synchronized (platforma.getMatrica()[x][y]) { //sinhronizovati sve
-            notify();
+    public void uvidjaj(Platforma platforma) {
+        try {
+            synchronized (this) {
+                wait();
+                platforma.setImaSudar(false);
+            }
+        } catch (InterruptedException ex) {
+            Logger.getLogger("error.log").log(Level.SEVERE, null, ex);
         }
     }
+
 }
