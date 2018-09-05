@@ -12,5 +12,10 @@ import vozilo.Motocikl;
  * @author Tijana Lakic
  */
 public class SpecijalniMotocikl extends Motocikl {
-    
+
+    private int koordinateNesreceX;
+    private int koordinateNesreceY;
+    private int nivoPlatformeNesrece;
+
+
 }

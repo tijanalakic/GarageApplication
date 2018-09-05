@@ -181,7 +181,7 @@ public abstract class Vozilo extends Thread implements Serializable {
     }
 // U ovoj funkciji je potrebno provjeriti da ukoliko ima dva koraka do parkinga
 // da li ce na prvom koraku doci do sudara, takodje nakon pomjeranja za jedno dodati jos jedno do parkinga
-// to se odnosi na oba slucaja <3
+// to se odnosi na oba slucaja
 
     public Boolean getParkiran() {
         return parkiran;
@@ -425,11 +425,8 @@ public abstract class Vozilo extends Thread implements Serializable {
         if (vjerovatnoca < 1) { //0.15
 
             platforma.setImaSudar(true);
-            GarageApplication.getExchanger().KOORDINATE_NESRECE_X = x;
-            GarageApplication.getExchanger().KOORDINATE_NESRECE_Y = y;
-            GarageApplication.getExchanger().NIVO_PLATFORME_NESRECE = trenutniNivo;
 
-            GarageApplication.getExchanger().getGaraza().pozivSpecijalnihVozila(trenutniNivo);
+            GarageApplication.getExchanger().getGaraza().pozivSpecijalnihVozila(x, y, trenutniNivo);
             return true;
 
         } else {
@@ -439,13 +436,14 @@ public abstract class Vozilo extends Thread implements Serializable {
 
     public void uvidjaj(Platforma platforma) {
         try {
-            synchronized (this) {
-                wait();
-                platforma.setImaSudar(false);
+            synchronized (platforma) {
+                platforma.wait();
             }
         } catch (InterruptedException ex) {
             Logger.getLogger("error.log").log(Level.SEVERE, null, ex);
         }
+        platforma.setImaSudar(false);
+
     }
 
 }

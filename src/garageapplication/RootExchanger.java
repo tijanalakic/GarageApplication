@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import javafx.stage.Stage;
 import vozilo.Vozilo;
 import garaza.Garaza;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -151,10 +152,7 @@ public class RootExchanger {
             }
         });
     }
-
     public static Vozilo VOZILO_KRETANJE;
-    public static int KOORDINATE_NESRECE_X = -1;
-    public static int KOORDINATE_NESRECE_Y = -1;
-    public static int NIVO_PLATFORME_NESRECE = -1;
-
+    
+    public static HashMap<Vozilo,String> mjestaNesrece = new HashMap<Vozilo, String>();
 }

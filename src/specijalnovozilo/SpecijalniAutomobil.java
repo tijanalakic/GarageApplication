@@ -12,5 +12,9 @@ import vozilo.Automobil;
  * @author Tijana Lakic
  */
 public class SpecijalniAutomobil extends Automobil {
-    
+
+    private int koordinateNesreceX;
+    private int koordinateNesreceY;
+    private int nivoPlatformeNesrece;
+
 }

@@ -67,7 +67,7 @@ public class FXMLUserApplicationController implements Initializable {
     public void userAppStartCompetitionButtonAction() throws IOException {
 
         String[] nizSpecijalnihVozila = {"policijski automobil", "policijski kombi",
-            "policijski motocikl", "sanitarni automobil", "sanitarni kombi",
+            "policijski motocikl", "sanitetski automobil", "sanitetski kombi",
             "vatrogasni kombi"};
         String[] nizObicnihVozila = {"automobil", "motocikl", "kombi"};
 
@@ -96,11 +96,11 @@ public class FXMLUserApplicationController implements Initializable {
                         vozilo = new PolicijskiMotocikl();
 
                         break;
-                    case "sanitarni automobil":
+                    case "sanitetski automobil":
                         vozilo = new SanitetskiAutomobil();
 
                         break;
-                    case "sanitarni kombi":
+                    case "sanitetski kombi":
                         vozilo = new SanitetskiKombi();
 
                         break;
@@ -128,7 +128,7 @@ public class FXMLUserApplicationController implements Initializable {
                         vozilo = new Motocikl();
                         break;
                 }
-                vozilo.setTrenutniNivo(j); //zar ne bi trebalo na pocetku setovati prije svica
+                vozilo.setTrenutniNivo(j);
                 garaza.getPlatforme().get(j).setElement(vozilo);
 
             }

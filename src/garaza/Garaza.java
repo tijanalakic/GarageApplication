@@ -5,8 +5,10 @@
  */
 package garaza;
 
+import garageapplication.GarageApplication;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Map;
 import specijalnovozilo.PolicijskiInterface;
 import specijalnovozilo.SanitetskiInterface;
 import specijalnovozilo.VatrogasniInterface;
@@ -51,8 +53,11 @@ public class Garaza implements Serializable {
         platforme.add(platforma);
     }
 
-    public synchronized void pozivSpecijalnihVozila(int trenutniNivo) {
-        
+    public synchronized void pozivSpecijalnihVozila(int koordinataNesreceX,
+            int koordinataNesreceY, int trenutniNivo) {
+
+        Map<Vozilo, String> mjestaNesrece = GarageApplication.getExchanger().mjestaNesrece;
+
         boolean pozvanaPolicija = false;
         boolean pozvanSanitet = false;
         boolean pozvaniVatrogasci = false;
@@ -65,6 +70,7 @@ public class Garaza implements Serializable {
 
                 if (!pozvanaPolicija && !((Vozilo) vozilo).isAlive()) {
                     if (vozilo instanceof PolicijskiInterface) {
+                        mjestaNesrece.put(vozilo, koordinataNesreceX + " " + koordinataNesreceY + " " + trenutniNivo);
                         vozilo.start();
                         pozvanaPolicija = true;
                         continue;
@@ -72,13 +78,15 @@ public class Garaza implements Serializable {
                 }
                 if (!pozvanSanitet && !((Vozilo) vozilo).isAlive()) {
                     if (vozilo instanceof SanitetskiInterface) {
+                        mjestaNesrece.put(vozilo, koordinataNesreceX + " " + koordinataNesreceY + " " + trenutniNivo);
                         vozilo.start();
                         pozvanSanitet = true;
                         continue;
                     }
                 }
-                if (!pozvaniVatrogasci) {
-                    if (vozilo instanceof VatrogasniInterface && !((Vozilo) vozilo).isAlive()) {
+                if (!pozvaniVatrogasci && !((Vozilo) vozilo).isAlive()) {
+                    if (vozilo instanceof VatrogasniInterface) {
+                        mjestaNesrece.put(vozilo, koordinataNesreceX + " " + koordinataNesreceY + " " + trenutniNivo);
                         vozilo.start();
                         pozvaniVatrogasci = true;
                         continue;
@@ -92,13 +100,13 @@ public class Garaza implements Serializable {
             }
             if (trenutniNivo == 1 && posmatraniNivo == 1) {
                 posmatraniNivo++;
-            } else if (trenutniNivo == platforme.size() && posmatraniNivo == platforme.size()) {
+            } else if (trenutniNivo == platforme.size() - 1 && posmatraniNivo == platforme.size() - 1) {
                 posmatraniNivo--;
             } else if (trenutniNivo == posmatraniNivo) {
                 posmatraniNivo++;
-            } else if (trenutniNivo > 1 && posmatraniNivo > trenutniNivo) {
+            } else if (trenutniNivo >= 1 && posmatraniNivo > trenutniNivo) {
                 posmatraniNivo -= 2;
-            } else{
+            } else {
                 pozvanaVozila = true;
             }
         }
