@@ -11,7 +11,6 @@ import static java.lang.Thread.sleep;
 import java.util.Map;
 import vozilo.Kombi;
 import vozilo.Vozilo;
-import static vozilo.Vozilo.X_NOVI_NIVO_ISPARKIRAVANJE;
 
 /**
  *
@@ -22,7 +21,8 @@ public class SpecijalniKombi extends Kombi {
     private int koordinateNesreceX;
     private int koordinateNesreceY;
     private int nivoPlatformeNesrece;
-
+    
+    public static int SLEEP = 500;
     @Override
     public void run() {
 
@@ -32,9 +32,6 @@ public class SpecijalniKombi extends Kombi {
         koordinateNesreceY = Integer.parseInt(mjestoNesrece[1]);
         nivoPlatformeNesrece = Integer.parseInt(mjestoNesrece[2]);
 
-        System.out.println(koordinateNesreceX + " " + koordinateNesreceY + " " + nivoPlatformeNesrece);
-        boolean gornjaPutanja = false;
-
         Object prethodnoStanjePolja = null;
 
         while (trenutniNivo != nivoPlatformeNesrece) {
@@ -42,253 +39,103 @@ public class SpecijalniKombi extends Kombi {
         }
 
         Platforma platforma = GarageApplication.getExchanger().getGaraza().getPlatforme().get(trenutniNivo);
+        boolean gornjaPutanja = odabirPutanje(platforma);
 
-        // provjera gdje se nalazi vozilo, kako bi se odabrala odgovarajuca putanja gornja/donja
-        if (koordinateNesreceY < platforma.getRed() / 2) {
+        //provjera da li je udes ispred parkiranog vozila
+        if (!stigao()) {
 
-            gornjaPutanja = true;
-
-            //racuna se opseg da bi se znalo da li je nesreca neporedno udaljena od specijalnog vozila
-            if (koordinateNesreceY > y) {
-
-                if (x == 0 || x == 4) {
-                    if (koordinateNesreceX > x && koordinateNesreceX <= x + 2) {
-                        gornjaPutanja = false;
-                    }
-                } else if (x == 3 || x == 7) {
-                    if (koordinateNesreceX > x && koordinateNesreceX <= x - 2) {
-                        gornjaPutanja = false;
-                    }
+            if (x == 0 || x == 4) {
+                x++;
+                if (y > 1) {
+                    platforma.getMatrica()[x - 1][y] = "*";
+                } else {
+                    platforma.getMatrica()[x - 1][y] = "";
                 }
-            } else {
-                gornjaPutanja = true;
-
-                //racuna se opseg da bi se znalo da li je nesreca neporedno udaljena od specijalnog vozila
-                if (koordinateNesreceY > y) {
-
-                    if (x == 0 || x == 4) {
-                        if (koordinateNesreceX > x && koordinateNesreceX <= x + 2) {
-                            gornjaPutanja = false;
-                        }
-                    } else if (x == 3 || x == 7) {
-                        if (koordinateNesreceX > x && koordinateNesreceX <= x - 2) {
-                            gornjaPutanja = false;
-                        }
-                    }
-                }
-            }
-            //provjera da li je udes ispred parkiranog vozila
-            if (!((x == koordinateNesreceX - 1) && (y == koordinateNesreceY) || (x == koordinateNesreceX + 1) && (y == koordinateNesreceY))) {
-
-                if (x == 0 || x == 4) {
-                    x++;
-                    if (y > 1) {
-                        platforma.getMatrica()[x - 1][y] = "*";
-                    } else {
-                        platforma.getMatrica()[x - 1][y] = "";
-                    }
-                    prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                    platforma.getMatrica()[x][y] = this;
-                    GarageApplication.getExchanger().refreshSimulacijaMatrica();
-
-                    try {
-                        sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    if ((x == koordinateNesreceX - 1) && (y == koordinateNesreceY)) {
-                        return;
-                    }
-                    if (gornjaPutanja) {
-                        x++;
-
-                        platforma.getMatrica()[x - 1][y] = prethodnoStanjePolja;
-                        prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                        platforma.getMatrica()[x][y] = this;
-                    }
-
-                } else if (x == 3 || x == 7) {
-
-                    x--;
-
-                    if (y > 1) {
-                        platforma.getMatrica()[x + 1][y] = "*";
-                    } else {
-                        platforma.getMatrica()[x + 1][y] = "";
-                    }
-                    prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                    platforma.getMatrica()[x][y] = this;
-
-                    GarageApplication.getExchanger().refreshSimulacijaMatrica();
-
-                    try {
-                        sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if ((x == koordinateNesreceX + 1) && (y == koordinateNesreceY)) {
-                        return;
-                    }
-                    if (!gornjaPutanja) {
-                        x--;
-
-                        platforma.getMatrica()[x + 1][y] = prethodnoStanjePolja;
-                        prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                        platforma.getMatrica()[x][y] = this;
-                    }
-
-                }
+                prethodnoStanjePolja = platforma.getMatrica()[x][y];
+                platforma.getMatrica()[x][y] = this;
                 GarageApplication.getExchanger().refreshSimulacijaMatrica();
 
                 try {
-                    sleep(500);
+                    sleep(SLEEP);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
-                if (gornjaPutanja) {
-                    prethodnoStanjePolja = gornjaPutanja(koordinateNesreceX, koordinateNesreceY, prethodnoStanjePolja);
-                } else {
-                    prethodnoStanjePolja = donjaPutanja(koordinateNesreceX, koordinateNesreceY, prethodnoStanjePolja);
+                if (stigao()) {
+                    return;
                 }
-            }
+                if (gornjaPutanja) {
+                    x++;
 
-            try {
-                sleep(5000);
-                platforma.getMatrica()[x][y] = prethodnoStanjePolja;
-                platforma.getListaVozila().remove(this);
+                    platforma.getMatrica()[x - 1][y] = prethodnoStanjePolja;
+                    prethodnoStanjePolja = platforma.getMatrica()[x][y];
+                    platforma.getMatrica()[x][y] = this;
+                }
+
+            } else if (x == 3 || x == 7) {
+
+                x--;
+
+                if (y > 1) {
+                    platforma.getMatrica()[x + 1][y] = "*";
+                } else {
+                    platforma.getMatrica()[x + 1][y] = "";
+                }
+                prethodnoStanjePolja = platforma.getMatrica()[x][y];
+                platforma.getMatrica()[x][y] = this;
+
                 GarageApplication.getExchanger().refreshSimulacijaMatrica();
 
-                synchronized (platforma) {
-                    platforma.notifyAll();
+                try {
+                    sleep(SLEEP);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
+                if (stigao()) {
+                    return;
+                }
+                if (!gornjaPutanja) {
+                    x--;
+
+                    platforma.getMatrica()[x + 1][y] = prethodnoStanjePolja;
+                    prethodnoStanjePolja = platforma.getMatrica()[x][y];
+                    platforma.getMatrica()[x][y] = this;
+                }
+
+            }
+            GarageApplication.getExchanger().refreshSimulacijaMatrica();
+
+            try {
+                sleep(SLEEP);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if (gornjaPutanja) {
+                prethodnoStanjePolja = gornjaPutanja(koordinateNesreceX, koordinateNesreceY, prethodnoStanjePolja);
+            } else {
+                prethodnoStanjePolja = donjaPutanja(koordinateNesreceX, koordinateNesreceY, prethodnoStanjePolja);
             }
         }
+
+        uvidjaj(platforma, prethodnoStanjePolja);
     }
 
     public Object gornjaPutanja(int koordinateNesreceX, int koordinateNesreceY, Object prethodnoStanjePolja) {
 
         Platforma platforma = GarageApplication.getExchanger().getGaraza().getPlatforme().get(trenutniNivo);
-        boolean stigao = false;
 
         if (x == 6) {
 
-            stigao = ((x == koordinateNesreceX + 1) && y == koordinateNesreceY)
-                    || (x == koordinateNesreceX && y == koordinateNesreceY - 1);
+            kretanjeUspravno(platforma, prethodnoStanjePolja, false);
+            kretanjeUlijevo(platforma, prethodnoStanjePolja, false);
+            kretanjeNadole(platforma, prethodnoStanjePolja, false);
 
-            while (y > 0 && !stigao) {
-
-                y--;
-                platforma.getMatrica()[x][y + 1] = prethodnoStanjePolja;
-                prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                platforma.getMatrica()[x][y] = this;
-
-                GarageApplication.getExchanger().refreshSimulacijaMatrica();
-
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                stigao = ((x == koordinateNesreceX + 1) && y == koordinateNesreceY)
-                        || (x == koordinateNesreceX && y == koordinateNesreceY + 1);
-
-            }
-
-            while (x > 1 && !stigao) {
-                x--;
-
-                platforma.getMatrica()[x + 1][y] = prethodnoStanjePolja;
-                prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                platforma.getMatrica()[x][y] = this;
-
-                GarageApplication.getExchanger().refreshSimulacijaMatrica();
-
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                stigao = ((x == koordinateNesreceX) && y == koordinateNesreceY - 1)
-                        || ((x == koordinateNesreceX + 1 && y == koordinateNesreceY));
-            }
-
-            while (y < platforma.getRed() - 1 && !stigao) {
-
-                y++;
-                platforma.getMatrica()[x][y - 1] = prethodnoStanjePolja;
-                prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                platforma.getMatrica()[x][y] = this;
-
-                GarageApplication.getExchanger().refreshSimulacijaMatrica();
-
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                stigao = ((x == koordinateNesreceX - 1) && (y == koordinateNesreceY))
-                        || ((x == koordinateNesreceX) && (y == koordinateNesreceY - 1));
-            }
         } else if (x == 2) {
 
-            stigao = (x == koordinateNesreceX + 1 && y == koordinateNesreceY)
-                    || (x == koordinateNesreceX && y == koordinateNesreceY + 1);
-            while (y < 1 && !stigao) {
-
-                y--;
-                platforma.getMatrica()[x][y + 1] = prethodnoStanjePolja;
-                prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                platforma.getMatrica()[x][y] = this;
-
-                GarageApplication.getExchanger().refreshSimulacijaMatrica();
-
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                stigao = (x == koordinateNesreceX + 1 && y == koordinateNesreceY)
-                        || (x == koordinateNesreceX && y == koordinateNesreceY + 1);
-            }
-
-            while (x < platforma.getKolona() - 2 && !stigao) {
-                x++;
-
-                platforma.getMatrica()[x - 1][y] = prethodnoStanjePolja;
-                prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                platforma.getMatrica()[x][y] = this;
-
-                GarageApplication.getExchanger().refreshSimulacijaMatrica();
-
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                stigao = ((x == koordinateNesreceX) && y == koordinateNesreceY + 1)
-                        || (x == koordinateNesreceX - 1 && y == koordinateNesreceY);
-            }
-
-            while (y < platforma.getRed() - 1 && !stigao) {
-
-                y++;
-                platforma.getMatrica()[x][y - 1] = prethodnoStanjePolja;
-                prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                platforma.getMatrica()[x][y] = this;
-
-                GarageApplication.getExchanger().refreshSimulacijaMatrica();
-
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                stigao = (x == koordinateNesreceX - 1) && y == koordinateNesreceY;
-            }
+            kretanjeUspravno(platforma, prethodnoStanjePolja, true);
+            kretanjeUdesno(platforma, prethodnoStanjePolja, true);
+            kretanjeNadole(platforma, prethodnoStanjePolja, true);
 
         }
         return prethodnoStanjePolja;
@@ -297,125 +144,20 @@ public class SpecijalniKombi extends Kombi {
     public Object donjaPutanja(int koordinateNesreceX, int koordinateNesreceY, Object prethodnoStanjePolja) {
 
         Platforma platforma = GarageApplication.getExchanger().getGaraza().getPlatforme().get(trenutniNivo);
-        boolean stigao = false;
-
         if (x == 5) {
 
-            stigao = ((x == koordinateNesreceX - 1) && y == koordinateNesreceY)
-                    || (x == koordinateNesreceX && y == koordinateNesreceY - 1);
-            while (y < platforma.getRed() - 2 && !stigao) {
-
-                y++;
-                platforma.getMatrica()[x][y - 1] = prethodnoStanjePolja;
-                prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                platforma.getMatrica()[x][y] = this;
-
-                GarageApplication.getExchanger().refreshSimulacijaMatrica();
-
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                stigao = ((x == koordinateNesreceX - 1) && y == koordinateNesreceY)
-                        || (x == koordinateNesreceX && y == koordinateNesreceY - 1);
-            }
-
-            while (x > 2 && !stigao) {
-                x--;
-
-                platforma.getMatrica()[x + 1][y] = prethodnoStanjePolja;
-                prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                platforma.getMatrica()[x][y] = this;
-
-                GarageApplication.getExchanger().refreshSimulacijaMatrica();
-
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                stigao = ((x == koordinateNesreceX) && y == koordinateNesreceY - 1)
-                        || (x == koordinateNesreceX + 1 && y == koordinateNesreceY);
-            }
-
-            while (y > 1 && !stigao) {
-
-                y--;
-                platforma.getMatrica()[x][y + 1] = prethodnoStanjePolja;
-                prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                platforma.getMatrica()[x][y] = this;
-
-                GarageApplication.getExchanger().refreshSimulacijaMatrica();
-
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                stigao = ((x == koordinateNesreceX + 1) && y == koordinateNesreceY)
-                        || (x == koordinateNesreceX && y == koordinateNesreceY + 1);
-            }
+            kretanjeNadole(platforma, prethodnoStanjePolja, true);
+            kretanjeUlijevo(platforma, prethodnoStanjePolja, true);
+            kretanjeUspravno(platforma, prethodnoStanjePolja, true);
+            
         } else if (x == 1) {
-
-            stigao = ((x == koordinateNesreceX - 1) && y == koordinateNesreceY)
-                    || (x == koordinateNesreceX && y == koordinateNesreceY - 1);
-            while (y < platforma.getRed() && !stigao) {
-
-                y++;
-                platforma.getMatrica()[x][y - 1] = prethodnoStanjePolja;
-                prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                platforma.getMatrica()[x][y] = this;
-
-                GarageApplication.getExchanger().refreshSimulacijaMatrica();
-
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                stigao = ((x == koordinateNesreceX - 1) && y == koordinateNesreceY)
-                        || (x == koordinateNesreceX && y == koordinateNesreceY - 1);
-            }
-
-            while (x < platforma.getKolona() - 1 && !stigao) {
-                x++;
-
-                platforma.getMatrica()[x - 1][y] = prethodnoStanjePolja;
-                prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                platforma.getMatrica()[x][y] = this;
-
-                GarageApplication.getExchanger().refreshSimulacijaMatrica();
-
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                stigao = ((x == koordinateNesreceX) && y == koordinateNesreceY + 1)
-                        || (x == koordinateNesreceX - 1 && y == koordinateNesreceY);
-            }
-
-            while (y > 1 && !stigao) {
-
-                y--;
-                platforma.getMatrica()[x][y + 1] = prethodnoStanjePolja;
-                prethodnoStanjePolja = platforma.getMatrica()[x][y];
-                platforma.getMatrica()[x][y] = this;
-
-                GarageApplication.getExchanger().refreshSimulacijaMatrica();
-
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                stigao = ((x == koordinateNesreceX + 1) && y == koordinateNesreceY)
-                        || (x == koordinateNesreceX && y == koordinateNesreceY + 1);
-            }
+            
+            kretanjeNadole(platforma, prethodnoStanjePolja, false);
+            kretanjeUdesno(platforma, prethodnoStanjePolja, false);
+            kretanjeUspravno(platforma, prethodnoStanjePolja, false);
         }
+        
         return prethodnoStanjePolja;
-
     }
 
     public void predjiNaDruguPlatformu(int nivoPlatformeNesrece) {
@@ -431,7 +173,7 @@ public class SpecijalniKombi extends Kombi {
             GarageApplication.getExchanger().refreshSimulacijaMatrica();
 
             try {
-                sleep(500);
+                sleep(SLEEP);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -454,28 +196,15 @@ public class SpecijalniKombi extends Kombi {
         GarageApplication.getExchanger().refreshSimulacijaMatrica();
 
         try {
-            sleep(500);
+            sleep(SLEEP);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        int odredisniY = 0;
+        boolean unutrasnjaTraka = false;
         if (trenutniNivo < nivoPlatformeNesrece) {
-            odredisniY = 1;
+            unutrasnjaTraka = true;
         }
-        while (y > odredisniY) {
-            y--;
-            platforma.getMatrica()[x][y + 1] = prethodnoStanjePolja;
-            prethodnoStanjePolja = platforma.getMatrica()[x][y];
-            platforma.getMatrica()[x][y] = this;
-
-            GarageApplication.getExchanger().refreshSimulacijaMatrica();
-
-            try {
-                sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        kretanjeUspravno(platforma, prethodnoStanjePolja, unutrasnjaTraka);
 
         int odredisnaKoordinata = 0;
         int inkrement = -1;
@@ -493,7 +222,7 @@ public class SpecijalniKombi extends Kombi {
             GarageApplication.getExchanger().refreshSimulacijaMatrica();
 
             try {
-                sleep(500);
+                sleep(SLEEP);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -513,7 +242,7 @@ public class SpecijalniKombi extends Kombi {
         GarageApplication.getExchanger().refreshSimulacijaMatrica();
 
         try {
-            sleep(500);
+            sleep(SLEEP);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -521,8 +250,133 @@ public class SpecijalniKombi extends Kombi {
     }
 
     public boolean stigao() {
+        return (x == koordinateNesreceX + 1 && y == koordinateNesreceY)
+                || (x == koordinateNesreceX - 1 && y == koordinateNesreceY)
+                || (x == koordinateNesreceX && y == koordinateNesreceY + 1)
+                || (x == koordinateNesreceX && y == koordinateNesreceY - 1);
+    }
 
-        return false;
+    public boolean odabirPutanje(Platforma platforma) {
 
+        boolean gornjaPutanja = false;
+        // provjera gdje se nalazi vozilo,   bi se odabrala odgovarajuca putanja gornja/donja
+        if (koordinateNesreceY < (platforma.getRed() / 2)) {
+            gornjaPutanja = true;
+
+            if (koordinateNesreceY > y) {
+                //racuna se opseg da bi se znalo da li je nesreca neporedno udaljena od specijalnog vozila
+                if (x == 0 || x == 4) {
+                    if (koordinateNesreceX > x && koordinateNesreceX <= x + 3) {
+                        gornjaPutanja = false;
+                    }
+                } else if (x == 3 || x == 7) {
+                    if (koordinateNesreceX < x && koordinateNesreceX >= x - 3) {
+                        gornjaPutanja = false;
+                    }
+                }
+
+            }
+        } else {
+
+            gornjaPutanja = false;
+            //racuna se opseg da bi se znalo da li je nesreca neporedno udaljena od specijalnog vozila
+            if (koordinateNesreceY < y) {
+
+                if (x == 0 || x == 4) {
+                    if (koordinateNesreceX > x && koordinateNesreceX <= x + 3) {
+                        gornjaPutanja = true;
+                    }
+                } else if (x == 3 || x == 7) {
+                    if (koordinateNesreceX < x && koordinateNesreceX >= x - 3) {
+                        gornjaPutanja = true;
+                    }
+                }
+            }
+        }
+        return gornjaPutanja;
+    }
+
+    public void kretanjeUspravno(Platforma platforma, Object prethodnoStanjePolja, boolean unutrasnjaTraka) {
+
+        int odredisnaKoordinata = (unutrasnjaTraka) ? 1 : 0;
+
+        while (y > odredisnaKoordinata && !stigao()) {
+            
+            y--;
+            platforma.getMatrica()[x][y + 1] = prethodnoStanjePolja;
+            prethodnoStanjePolja = platforma.getMatrica()[x][y];
+            platforma.getMatrica()[x][y] = this;
+
+            GarageApplication.getExchanger().refreshSimulacijaMatrica();
+
+            try {
+                sleep(SLEEP);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void kretanjeUlijevo(Platforma platforma, Object prethodnoStanjePolja, boolean unutrasnjaTraka) {
+
+        int odredisnaKoordinata = (unutrasnjaTraka) ? 2 : 1;
+
+        while (x > odredisnaKoordinata && !stigao()) {
+            x--;
+
+            platforma.getMatrica()[x + 1][y] = prethodnoStanjePolja;
+            prethodnoStanjePolja = platforma.getMatrica()[x][y];
+            platforma.getMatrica()[x][y] = this;
+
+            GarageApplication.getExchanger().refreshSimulacijaMatrica();
+
+            try {
+                sleep(SLEEP);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void kretanjeNadole(Platforma platforma, Object prethodnoStanjePolja, boolean unutrasnjaTraka) {
+
+        int odredisnaKoordinata = platforma.getRed() - ((unutrasnjaTraka) ? 2 : 1);
+
+        while (y < odredisnaKoordinata && !stigao()) {
+
+            y++;
+            platforma.getMatrica()[x][y - 1] = prethodnoStanjePolja;
+            prethodnoStanjePolja = platforma.getMatrica()[x][y];
+            platforma.getMatrica()[x][y] = this;
+
+            GarageApplication.getExchanger().refreshSimulacijaMatrica();
+
+            try {
+                sleep(SLEEP);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void kretanjeUdesno(Platforma platforma, Object prethodnoStanjePolja, boolean unutrasnjaTraka) {
+
+        int odredisnaKoordinata = platforma.getKolona() - ((unutrasnjaTraka) ? 3 : 2);
+
+        while (x < odredisnaKoordinata && !stigao()) {
+            x++;
+
+            platforma.getMatrica()[x - 1][y] = prethodnoStanjePolja;
+            prethodnoStanjePolja = platforma.getMatrica()[x][y];
+            platforma.getMatrica()[x][y] = this;
+
+            GarageApplication.getExchanger().refreshSimulacijaMatrica();
+
+            try {
+                sleep(SLEEP);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

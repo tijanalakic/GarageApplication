@@ -5,6 +5,10 @@
  */
 package specijalnovozilo;
 
+import garageapplication.GarageApplication;
+import garaza.Platforma;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import vozilo.Kombi;
 
 /**
@@ -31,5 +35,18 @@ public class VatrogasniKombi extends SpecijalniKombi implements VatrogasniInterf
     
     }
     
-    
+    @Override
+    public void uvidjaj(Platforma platforma, Object prethodnoStanjePolja) {
+
+        try {
+            synchronized (platforma) {
+                platforma.wait();
+            }
+        } catch (InterruptedException ex) {
+            Logger.getLogger("error.log").log(Level.SEVERE, null, ex);
+        }
+        platforma.getListaVozila().remove(this);
+        platforma.getMatrica()[x][y] = prethodnoStanjePolja;
+        GarageApplication.getExchanger().refreshSimulacijaMatrica();
+    }
 }

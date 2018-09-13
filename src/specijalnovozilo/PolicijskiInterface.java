@@ -15,5 +15,4 @@ public interface PolicijskiInterface extends InstitutionalInterface{
     
     @Override
     Boolean rotacija();
-  
 }

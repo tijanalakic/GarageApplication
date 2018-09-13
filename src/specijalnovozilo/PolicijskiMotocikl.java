@@ -5,6 +5,10 @@
  */
 package specijalnovozilo;
 
+import garageapplication.GarageApplication;
+import garaza.Platforma;
+import static java.lang.Thread.sleep;
+import java.util.Random;
 import vozilo.Motocikl;
 
 /**
@@ -32,7 +36,24 @@ public class PolicijskiMotocikl extends SpecijalniMotocikl implements Policijski
     
     }
     
-    
+       @Override
+    public void uvidjaj(Platforma platforma, Object prethodnoStanjePolja){
+        
+         int trajanjaUvidjaja = 3000 + (new Random().nextInt(7)*1000);
+         try {
+            
+            sleep(trajanjaUvidjaja);
+            platforma.getListaVozila().remove(this);
+            platforma.getMatrica()[x][y] = prethodnoStanjePolja;
+            GarageApplication.getExchanger().refreshSimulacijaMatrica();
+
+            synchronized (platforma) {
+                platforma.notifyAll();
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
     
     
 }

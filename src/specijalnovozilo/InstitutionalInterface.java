@@ -13,6 +13,4 @@ package specijalnovozilo;
 public interface InstitutionalInterface {
      
     Boolean rotacija();
-    
-
 }

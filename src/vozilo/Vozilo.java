@@ -14,8 +14,6 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Date;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  *
@@ -35,7 +33,7 @@ public abstract class Vozilo extends Thread implements Serializable {
     protected int trenutniNivo = 0;
     protected long vrijemeParkiranja = 0;
     protected long vrijemeNapustanjaParkinga = 0;
-    protected long zadrzavanje = 0;
+    protected long zadrzavanje = 500;
     public static int[] X_PARKIRANJE = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6};
     public static int[] X_NOVI_NIVO = {2, 3, 4, 5, 6, 7};
     public static int[] X_NOVI_NIVO_ISPARKIRAVANJE = {0, 1, 2, 3, 4, 5, 6, 7};
@@ -102,7 +100,6 @@ public abstract class Vozilo extends Thread implements Serializable {
     public void setRegistarskiBroj(String registarskiBroj) {
         this.registarskiBroj = registarskiBroj;
     }
-    //  protected static final Logger LOG = Logger.getLogger(Vozilo.class.getName());
 
     @Override
     public String toString() {
@@ -131,7 +128,7 @@ public abstract class Vozilo extends Thread implements Serializable {
             GarageApplication.getExchanger().refreshSimulacijaMatrica();
             i++;
             try {
-                sleep(500);
+                sleep(zadrzavanje);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -145,7 +142,7 @@ public abstract class Vozilo extends Thread implements Serializable {
                 GarageApplication.getExchanger().refreshSimulacijaMatrica();
 
                 try {
-                    sleep(500);
+                    sleep(zadrzavanje);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -167,7 +164,7 @@ public abstract class Vozilo extends Thread implements Serializable {
             platforma.getMatrica()[x][y] = this;
             GarageApplication.getExchanger().refreshSimulacijaMatrica();
             try {
-                sleep(500);
+                sleep(zadrzavanje);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -236,7 +233,7 @@ public abstract class Vozilo extends Thread implements Serializable {
                 GarageApplication.getExchanger().refreshSimulacijaMatrica();
 
                 try {
-                    sleep(500);
+                    sleep(zadrzavanje);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -300,7 +297,7 @@ public abstract class Vozilo extends Thread implements Serializable {
             GarageApplication.getExchanger().refreshSimulacijaMatrica();
 
             try {
-                sleep(500);
+                sleep(zadrzavanje);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -329,15 +326,14 @@ public abstract class Vozilo extends Thread implements Serializable {
 
             platforma.getMatrica()[x][y] = this;
 
-        }
-        GarageApplication.getExchanger().refreshSimulacijaMatrica();
+            GarageApplication.getExchanger().refreshSimulacijaMatrica();
 
-        try {
-            sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            try {
+                sleep(zadrzavanje);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-
         while (y > 0) {
             y--;
             if (platforma.getMatrica()[x][y] instanceof Vozilo) {
@@ -353,7 +349,7 @@ public abstract class Vozilo extends Thread implements Serializable {
             GarageApplication.getExchanger().refreshSimulacijaMatrica();
 
             try {
-                sleep(500);
+                sleep(zadrzavanje);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -374,7 +370,7 @@ public abstract class Vozilo extends Thread implements Serializable {
             GarageApplication.getExchanger().refreshSimulacijaMatrica();
 
             try {
-                sleep(500);
+                sleep(zadrzavanje);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -399,7 +395,7 @@ public abstract class Vozilo extends Thread implements Serializable {
                 GarageApplication.getExchanger().refreshSimulacijaMatrica();
 
                 try {
-                    sleep(500);
+                    sleep(zadrzavanje);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -422,7 +418,7 @@ public abstract class Vozilo extends Thread implements Serializable {
     public boolean sudar(Platforma platforma) {
         Random random = new Random();
         double vjerovatnoca = random.nextDouble();
-        if (vjerovatnoca < 1) { //0.15
+        if (vjerovatnoca < 0.1) {
 
             platforma.setImaSudar(true);
 
@@ -446,4 +442,6 @@ public abstract class Vozilo extends Thread implements Serializable {
 
     }
 
+    public void uvidjaj(Platforma platforma, Object prethodnoStanjePolja) {
+    }
 }
