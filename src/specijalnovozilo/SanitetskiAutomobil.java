@@ -17,10 +17,11 @@ import vozilo.Automobil;
  *
  * @author Tijana Lakic
  */
-public class SanitetskiAutomobil extends SpecijalniAutomobil implements SanitetskiInterface {
+public class SanitetskiAutomobil extends Automobil implements SanitetskiInterface {
 
     public SanitetskiAutomobil() {
         super();
+        oznaka = "H";
     }
 
     @Override
@@ -29,15 +30,10 @@ public class SanitetskiAutomobil extends SpecijalniAutomobil implements Sanitets
     }
 
     @Override
-    public String toString() {
-
-        return "H";
-
-    }
-
-    @Override
     public void uvidjaj(Platforma platforma, Object prethodnoStanjePolja) {
 
+        platforma.stiglaHitna = true;
+        
         try {
             synchronized (platforma) {
                 platforma.wait();
@@ -46,7 +42,7 @@ public class SanitetskiAutomobil extends SpecijalniAutomobil implements Sanitets
             Logger.getLogger("error.log").log(Level.SEVERE, null, ex);
         }
         platforma.getListaVozila().remove(this);
-        platforma.getMatrica()[x][y] = prethodnoStanjePolja;
+        platforma.getMatrica()[x][y] = null;
         GarageApplication.getExchanger().refreshSimulacijaMatrica();
     }
 

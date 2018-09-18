@@ -22,6 +22,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -43,6 +44,14 @@ public class FXMLAddVoziloController implements Initializable {
     private VBox parentVBox;
 
     private File voziloImage = new File("");
+    @FXML
+    private AnchorPane applicationMainAnchorPane;
+    @FXML
+    private AnchorPane applicationMenuAnchorPane;
+    @FXML
+    private Label addVoziloWindowHeaderLabel;
+    @FXML
+    private Label errorLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -79,6 +88,7 @@ public class FXMLAddVoziloController implements Initializable {
 
                 FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("*.jpg", "*.JPG", "*.gif", "*.GIF", "*.png", "*.PNG");
                 fileChooser.getExtensionFilters().addAll(imageFilter);
+                fileChooser.setInitialDirectory(new File(utils.Utils.PROPERTIES.getProperty("IMAGES_FOLDER_PATH")));
 
                 fileChooser.setTitle("Dodaj fotografiju vozila");
                 File file = fileChooser.showOpenDialog((Stage) (dodajFotografijuButton.getScene().getWindow()));
@@ -92,6 +102,12 @@ public class FXMLAddVoziloController implements Initializable {
     @FXML
     private void addVoziloSubmitButtonAction() {
 
+        Vozilo currentVozilo = GarageApplication.getExchanger().getEditVozilo();
+        if (((TextField) (parentVBox.getChildren().get(1))).getText().equals("") || ((TextField) (parentVBox.getChildren().get(2))).getText().equals("")
+                || ((TextField) (parentVBox.getChildren().get(3))).getText().equals("") || ((TextField) (parentVBox.getChildren().get(4))).getText().equals("")) {
+
+            utils.MyAlert.display("Greska", "Niste unijeli sve podatke", "error");
+        }else{
         String naziv = ((TextField) (parentVBox.getChildren().get(1))).getText();
         String brojSasije = ((TextField) (parentVBox.getChildren().get(2))).getText();
         String brojMotora = ((TextField) (parentVBox.getChildren().get(3))).getText();
@@ -101,9 +117,21 @@ public class FXMLAddVoziloController implements Initializable {
             case "Automobil": {
 
                 String brojVrata = ((TextField) (parentVBox.getChildren().get(5))).getText();
-                Automobil auto = new Automobil(naziv, brojSasije, brojMotora, voziloImage, registarskiBroj, Integer.parseInt(brojVrata));
+                int brojVrataInt = -1;
+                try {
+                    brojVrataInt = Integer.parseInt(brojVrata);
+                } catch (Exception ex) {
+                    //ex.printStackTrace();
+                }
+                if (brojVrataInt <= 0) {
+                    errorLabel.setText("Niste unijeli validan broj vrata");
+                    return;
+                } else {
+                    errorLabel.setText("");
+                }
+                Automobil auto = new Automobil(naziv, brojSasije, brojMotora, voziloImage, registarskiBroj, brojVrataInt);
                 auto.setTrenutniNivo(GarageApplication.getExchanger().getNivo());
-                //proba
+
                 GarageApplication.getExchanger().VOZILO_KRETANJE = auto;
 
                 GarageApplication.getExchanger().getVozila().add(auto);
@@ -112,9 +140,21 @@ public class FXMLAddVoziloController implements Initializable {
             }
             case "Kombi": {
                 String nosivost = ((TextField) (parentVBox.getChildren().get(5))).getText();
-                Kombi kombi = new Kombi(naziv, brojSasije, brojMotora, voziloImage, registarskiBroj, Double.parseDouble(nosivost));
+                Double nosivostDouble = -1.0;
+                try {
+                    nosivostDouble = Double.parseDouble(nosivost);
+                } catch (Exception ex) {
+                    // ex.printStackTrace();
+                }
+                if (nosivostDouble <= 0 || nosivostDouble.isNaN()) {
+                    errorLabel.setText("Niste unijeli validnu nosivost");
+                    return;
+                } else {
+                    errorLabel.setText("");
+                }
+                Kombi kombi = new Kombi(naziv, brojSasije, brojMotora, voziloImage, registarskiBroj, nosivostDouble);
                 kombi.setTrenutniNivo(GarageApplication.getExchanger().getNivo());
-                
+
                 GarageApplication.getExchanger().VOZILO_KRETANJE = kombi;
 
                 GarageApplication.getExchanger().getVozila().add(kombi);
@@ -137,5 +177,5 @@ public class FXMLAddVoziloController implements Initializable {
 
         ((Stage) addVoziloSubmitButton.getScene().getWindow()).close();
     }
-
+    }
 }

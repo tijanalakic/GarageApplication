@@ -6,6 +6,7 @@
 package vozilo;
 
 import java.io.File;
+import utils.Utils;
 
 /**
  *
@@ -17,7 +18,7 @@ public class Kombi extends Vozilo {
    
 
     public Kombi() {
-        super("kombi"+brojac,"BRSASIje-K-"+brojac,"BRMOTORA-K-"+brojac,new File("ala"),"REGBR-K-"+brojac,TipVozilaEnum.KOMBI); //random string istraziti....
+        super("kombi"+brojac,"BRSASIje-K-"+brojac,"BRMOTORA-K-"+brojac,new File(Utils.PROPERTIES.getProperty("DEFAULT_PICTURE_PATH")),"REGBR-K-"+brojac,TipVozilaEnum.KOMBI); //random string istraziti....
         nosivost=rand.nextDouble()*10000;
         brojac++;
     }

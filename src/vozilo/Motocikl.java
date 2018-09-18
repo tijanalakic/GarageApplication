@@ -6,6 +6,7 @@
 package vozilo;
 
 import java.io.File;
+import utils.Utils;
 
 /**
  *
@@ -14,7 +15,7 @@ import java.io.File;
 public class Motocikl extends Vozilo {
     static int brojac=0;
     public Motocikl() {
-          super("motor"+brojac,"BRSASIJE-M-"+brojac,"BRMOTORA-M-"+brojac,new File("ala"),"REGBR-M-"+brojac,TipVozilaEnum.MOTOR); //random string istraziti....
+          super("motor"+brojac,"BRSASIJE-M-"+brojac,"BRMOTORA-M-"+brojac,new File(Utils.PROPERTIES.getProperty("DEFAULT_PICTURE_PATH")),"REGBR-M-"+brojac,TipVozilaEnum.MOTOR); //random string istraziti....
           brojac++;
     }
 

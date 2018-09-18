@@ -14,7 +14,7 @@
     <URL value="@../css/applicationCss.css" />
     </stylesheets>
     <children>
-      <TextArea fx:id="simulationTextArea" editable="false" layoutX="16.0" layoutY="25.0" prefHeight="554.0" prefWidth="569.0" AnchorPane.bottomAnchor="22.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="416.0" AnchorPane.topAnchor="24.0">
+      <TextArea fx:id="simulationTextArea" editable="false" layoutX="17.0" layoutY="26.0" prefHeight="552.0" prefWidth="544.0" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="400.0" AnchorPane.topAnchor="25.0">
          <font>
             <Font name="System Bold" size="50.0" />
          </font></TextArea>
@@ -24,6 +24,8 @@
                 <ComboBox fx:id="platformaComboBox" onAction="#izborPlatformeOnAction" prefHeight="40.0" prefWidth="300.0" promptText="Izbor platforme" />
                 <ComboBox fx:id="addVoziloComboBox" prefHeight="40.0" prefWidth="300.0" promptText="Izbor tipa vozila" />
                 <Button fx:id="addVoziloButton" mnemonicParsing="false" onAction="#addVoziloButtonAction" prefHeight="40.0" prefWidth="300.0" text="Dodaj vozilo" />
+            <Button mnemonicParsing="false" onAction="#evidencijaNaplateParkingaOnAction" prefHeight="40.0" prefWidth="300.0" text="Evidencija naplate parkinga" />
+            <Label fx:id="evidencijaNaplateLabel" />
                 <Label fx:id="addVoziloWarningLabel" />
             </children>
         </VBox>

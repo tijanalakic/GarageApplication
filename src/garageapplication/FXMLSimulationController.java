@@ -11,11 +11,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -25,7 +32,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import specijalnovozilo.InstitutionalInterface;
 import vozilo.Vozilo;
 
@@ -47,6 +56,13 @@ public class FXMLSimulationController implements Initializable {
     private Label addVoziloWarningLabel;
 
     public ExecutorService executor = Executors.newFixedThreadPool(100);
+    @FXML
+    private AnchorPane applicationMainAnchorPane;
+    @FXML
+    private Label brojPlatformeLabel;
+    @FXML
+    private Label evidencijaNaplateLabel;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -59,16 +75,13 @@ public class FXMLSimulationController implements Initializable {
 
         addVoziloComboBox.getItems().addAll("Automobil", "Kombi", "Motocikl");
 
-        //simulationTextArea.setText(FXMLUserApplicationController.garaza.getPlatforme().get());
         GarageApplication.getExchanger().setSimulacijaMatrica(simulationTextArea);
         GarageApplication.getExchanger().refreshSimulacijaMatrica();
-        // simulationTextArea.setStyle("-fx-font-family: monospace");
         simulationTextArea.setStyle("-fx-font: 58 monospace");
 
-
         for (int k = 0; k < GarageApplication.getExchanger().getGaraza().getBrojPlatformi(); k++) {
-        
-            int brojVozilaKojaSeIsparkiravaju =(int) Math.round(GarageApplication.getExchanger().getBrojVozila(k) * 0.15);
+
+            int brojVozilaKojaSeIsparkiravaju = (int) Math.round(GarageApplication.getExchanger().getBrojVozila(k) * 0.15);
 
             for (int i = 0; i < brojVozilaKojaSeIsparkiravaju; i++) {
                 Boolean isparkiraj = false;
@@ -79,10 +92,10 @@ public class FXMLSimulationController implements Initializable {
 
                     Object vozilo = GarageApplication.getExchanger().getGaraza().getPlatforme().get(k).getElement(Platforma.Xparking[x],
                             Platforma.Yparking[y]);
-                   
-                    if (vozilo instanceof Vozilo && !(vozilo instanceof InstitutionalInterface) &&
-                            !((Vozilo) vozilo).isAlive()) {
-                        
+
+                    if (vozilo instanceof Vozilo && !(vozilo instanceof InstitutionalInterface)
+                            && !((Vozilo) vozilo).isAlive()) {
+
                         executor.submit((Vozilo) vozilo);
                         isparkiraj = true;
 
@@ -96,6 +109,17 @@ public class FXMLSimulationController implements Initializable {
     @FXML
     public void addVoziloButtonAction() throws IOException {
 
+        int ukupanBrojVozilaUGarazi=0;
+        for(int i=0;i<GarageApplication.getExchanger().getGaraza().getBrojPlatformi();i++){
+       
+            ukupanBrojVozilaUGarazi+=GarageApplication.getExchanger().getBrojVozila(i);
+                }
+        System.out.println("ukupno vozila" +ukupanBrojVozilaUGarazi);
+        int kapacitetGaraze=28*GarageApplication.getExchanger().getGaraza().getBrojPlatformi();
+        if(ukupanBrojVozilaUGarazi==kapacitetGaraze){
+        
+            utils.MyAlert.display("Obavjestene", "Kapacitet garaze je trenutno popunjen.", "info");
+        }else{
         if (addVoziloComboBox.getSelectionModel().isEmpty()) {
             addVoziloWarningLabel.setText("Odaberite tip vozila!");
             return;
@@ -130,7 +154,7 @@ public class FXMLSimulationController implements Initializable {
         RootExchanger.VOZILO_KRETANJE.start();
 
     }
-
+    }
     @FXML
     private void izborPlatformeOnAction(ActionEvent event) {
 
@@ -143,14 +167,24 @@ public class FXMLSimulationController implements Initializable {
 
     }
 
+ 
+
     @FXML
-    private void HandleButtonOnClose(ActionEvent event) {
-
-        try (ObjectOutputStream ser = new ObjectOutputStream(new FileOutputStream(new File("garaza.ser")))) {
-            ser.writeObject(GarageApplication.getExchanger().getGaraza());
-        } catch (IOException e) {
-            System.out.println("SERIJALIZACIJA ERROR" + e);
+    private void evidencijaNaplateParkingaOnAction(ActionEvent event) {
+        Iterator it = GarageApplication.getExchanger().getGaraza().getEvidencijaNaplateParkinga().entrySet().iterator();
+        ArrayList<String> evidencijaNaplate = new ArrayList<>();
+        while (it.hasNext()) {
+            Map.Entry pairs = (Map.Entry) it.next();
+            Vozilo vozilo = (Vozilo) pairs.getKey();
+            evidencijaNaplate.add(vozilo.getRegistarskiBroj() + "," + vozilo.getVrijemeUlaska() + "," + pairs.getValue());
         }
+        try {
+            utils.Utils.kreirajCsvFajl(evidencijaNaplate);
+        } catch (IOException ex) {
+            Logger.getLogger("error.log").log(Level.SEVERE, null, ex);
+            evidencijaNaplateLabel.setText("Doslo je do greske");
 
+        }
+        evidencijaNaplateLabel.setText("Uspjesno kreiran CSV");
     }
 }

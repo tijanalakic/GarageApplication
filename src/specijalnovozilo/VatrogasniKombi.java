@@ -15,11 +15,12 @@ import vozilo.Kombi;
  *
  * @author Tijana Lakic
  */
-public class VatrogasniKombi extends SpecijalniKombi implements VatrogasniInterface{
+public class VatrogasniKombi extends Kombi implements VatrogasniInterface{
 
     public VatrogasniKombi() {
        
         super();
+        oznaka = "F";
     }
 
     @Override
@@ -29,15 +30,9 @@ public class VatrogasniKombi extends SpecijalniKombi implements VatrogasniInterf
     }
 
     @Override
-    public String toString(){
-    
-        return "F";
-    
-    }
-    
-    @Override
     public void uvidjaj(Platforma platforma, Object prethodnoStanjePolja) {
-
+        
+        platforma.stigliVatrogasci = true;
         try {
             synchronized (platforma) {
                 platforma.wait();
@@ -46,7 +41,7 @@ public class VatrogasniKombi extends SpecijalniKombi implements VatrogasniInterf
             Logger.getLogger("error.log").log(Level.SEVERE, null, ex);
         }
         platforma.getListaVozila().remove(this);
-        platforma.getMatrica()[x][y] = prethodnoStanjePolja;
+        platforma.getMatrica()[x][y] = null;
         GarageApplication.getExchanger().refreshSimulacijaMatrica();
     }
 }

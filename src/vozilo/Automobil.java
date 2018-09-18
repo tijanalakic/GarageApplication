@@ -6,6 +6,7 @@
 package vozilo;
 
 import java.io.File;
+import utils.Utils;
 
 /**
  *
@@ -18,7 +19,7 @@ public class Automobil extends Vozilo {
     
 
     public Automobil() {
-        super("Auto"+brojac,"BRSASIJE-A-"+brojac,"BRMOTORA-A-"+brojac,new File("ala"),"REGBR-A-"+brojac,TipVozilaEnum.AUTO); 
+        super("Auto"+brojac,"BRSASIJE-A-"+brojac,"BRMOTORA-A-"+brojac,new File(Utils.PROPERTIES.getProperty("DEFAULT_PICTURE_PATH")),"REGBR-A-"+brojac,TipVozilaEnum.AUTO); 
         brojVrata=brojVrataAuta[rand.nextInt(3)];
         brojac++;
     }

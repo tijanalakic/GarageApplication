@@ -15,11 +15,12 @@ import vozilo.Kombi;
  *
  * @author Tijana Lakic
  */
-public class SanitetskiKombi extends SpecijalniKombi implements SanitetskiInterface {
+public class SanitetskiKombi extends Kombi implements SanitetskiInterface {
 
     public SanitetskiKombi() {
         
         super();
+        oznaka = "H";
     }
 
     @Override
@@ -27,17 +28,11 @@ public class SanitetskiKombi extends SpecijalniKombi implements SanitetskiInterf
         return rand.nextBoolean();
     }
 
-        @Override 
-    public String toString(){
-        
-        return "H";
-    
-    
-    }
     
     @Override
     public void uvidjaj(Platforma platforma, Object prethodnoStanjePolja) {
 
+        platforma.stiglaHitna = true;
         try {
             synchronized (platforma) {
                 platforma.wait();
@@ -46,7 +41,7 @@ public class SanitetskiKombi extends SpecijalniKombi implements SanitetskiInterf
             Logger.getLogger("error.log").log(Level.SEVERE, null, ex);
         }
         platforma.getListaVozila().remove(this);
-        platforma.getMatrica()[x][y] = prethodnoStanjePolja;
+        platforma.getMatrica()[x][y] = null;
         GarageApplication.getExchanger().refreshSimulacijaMatrica();
     }
     

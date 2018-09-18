@@ -9,9 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="applicationMainAnchorPane" fx:id="applicationMainAnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-            minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" 
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="garageapplication.FXMLEditVoziloController">
+<AnchorPane id="applicationMainAnchorPane" fx:id="applicationMainAnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="garageapplication.FXMLEditVoziloController">
    <stylesheets>
     <URL value="@../css/applicationCss.css" />
     </stylesheets>
@@ -36,5 +34,6 @@
 
          </children>
       </VBox>
+      <Label fx:id="errorLabel" layoutX="91.0" layoutY="256.0" textFill="#dd2323" AnchorPane.bottomAnchor="70.0" />
    </children>
 </AnchorPane>

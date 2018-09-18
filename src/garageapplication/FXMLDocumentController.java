@@ -66,14 +66,15 @@ public class FXMLDocumentController implements Initializable {
     private Button startUserAppButton;
     
     public static ObservableList<Vozilo> listaVozila = FXCollections.observableArrayList();
-    public static String ROOT_RESOURCE = "./src/resources/"; // staviti u property
+    public static String ROOT_RESOURCE = "./src/resources/";
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
        
         
         brojPlatformeLabel.setText("Odaberi platformu");
-        brojPlatformeLabel.setAlignment(Pos.CENTER); //ne radii!!
+        brojPlatformeLabel.setAlignment(Pos.CENTER);
         vozilaTableView.setItems(listaVozila);
         
         tipVozilaCol.setCellValueFactory(new PropertyValueFactory<>("tip"));
@@ -200,6 +201,7 @@ public class FXMLDocumentController implements Initializable {
 
         Vozilo vozilo = vozilaTableView.getSelectionModel().getSelectedItem();
         GarageApplication.getExchanger().getVozila().remove(vozilo);
+        garageapplication.GarageApplication.getExchanger().getGaraza().getPlatforme().get(vozilo.getTrenutniNivo()).getMatrica()[vozilo.getX()][vozilo.getY()] = "*";
         GarageApplication.getExchanger().refreshVozilaTable();
         
         editVoziloButton.setDisable(true);

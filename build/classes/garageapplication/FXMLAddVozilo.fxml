@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.*?>
-<?import javafx.geometry.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import java.net.*?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="applicationMainAnchorPane" fx:id="applicationMainAnchorPane" maxHeight="1.7976931348623157E308" 
-            maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0"
-            xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="garageapplication.FXMLAddVoziloController">
+<AnchorPane id="applicationMainAnchorPane" fx:id="applicationMainAnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="garageapplication.FXMLAddVoziloController">
    <stylesheets>
     <URL value="@../css/applicationCss.css" />
     </stylesheets>
@@ -28,5 +24,6 @@
             <TextField promptText="Registarski broj" />
          </children>
       </VBox>
+      <Label fx:id="errorLabel" layoutX="14.0" layoutY="314.0" textFill="#d70f0f" AnchorPane.bottomAnchor="70.0" />
    </children>
 </AnchorPane>

@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
+import specijalnovozilo.InstitutionalInterface;
 
 /**
  *
@@ -28,6 +29,7 @@ public class RootExchanger {
     private Stage currentStage;
     private TextArea simulacijaMatrica;
 
+    public static final Object specijalnoVoziloLock = new Object();
     public Garaza garaza;
 
     public ArrayList<Vozilo> vozila = new ArrayList<>();
@@ -53,7 +55,11 @@ public class RootExchanger {
 
     public void refreshVozilaTable() {
         FXMLDocumentController.listaVozila.clear();
-        FXMLDocumentController.listaVozila.setAll(getVozila());
+        ArrayList<Vozilo> listaObicnihVozila= new ArrayList<>();
+        getVozila().stream().filter((v) -> (!(v instanceof InstitutionalInterface))).forEachOrdered((v) -> {
+            listaObicnihVozila.add(v);
+        });
+        FXMLDocumentController.listaVozila.setAll(listaObicnihVozila);
     }
 
     public void setSimulacijaMatrica(TextArea simulacijaMatrica) {
@@ -143,7 +149,7 @@ public class RootExchanger {
 
     }
 
-    public void refreshSimulacijaMatrica() {
+    public synchronized void refreshSimulacijaMatrica() {
         Platform.runLater(() -> {
             try {
                 simulacijaMatrica.setText(garaza.getPlatforme().get(nivoPrikaz).toString());
@@ -155,4 +161,5 @@ public class RootExchanger {
     public static Vozilo VOZILO_KRETANJE;
     
     public static HashMap<Vozilo,String> mjestaNesrece = new HashMap<Vozilo, String>();
+    public static HashMap<Vozilo,ArrayList<Vozilo>> ucesniciUNesreci = new HashMap<>();
 }
